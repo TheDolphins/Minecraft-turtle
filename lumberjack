@@ -4,31 +4,47 @@ function isInFrontOf(name)
 end
 
 function cutDownTree()
-  -- cut down the tree from bottom to up
-  while turtle.detect() or turtle.detectUp() do
-    turtle.dig();
+  while true do
+    local cutSomething = false;
+    for i=1,4 do
+      if isInFrontOf("minecraft:log") or isInFrontOf("minecraft:leaves") then
+        turtle.dig();
+        cutSomething = true;
+      end
+      turtle.turnLeft();
+    end
+    
     if turtle.detectUp() then
       turtle.digUp();
+      cutSomething = true;
     end
-    turtle.up();
+    
+    if not cutSomething then
+      -- if we are done, come all the way down to the ground
+      while not turtle.detectDown() do
+        turtle.down();
+      end
+      -- then plant a sapling
+      hold("minecraft:sapling");
+      turtle.place()
+      
+      return;
+    end
+    
+    -- if we have cut anything, go up and cut some more
+    turtle.up()
   end
-  -- if we are done, come all the way down to the ground
-  while not turtle.detectDown() do
-    turtle.down();
-  end
-  -- then plant a sapling
-  hold("minecraft:sapling");
-  turtle.place()
 end
-
+  
 function hold(name)
   for i=1,16 do
     turtle.select(i)
-    if turtle.getItemDetail().name==name then
+    local detail = turtle.getItemDetail();
+    if detail and detail.name==name then
       return
     end
   end
-  print("No more sapling!!");
+  print("No more "+name);
   die();
 end
 
