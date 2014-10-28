@@ -1,0 +1,6 @@
+local success,data=turtle.inspect()
+if success then
+  print(data.name)
+else
+  print("air")
+end

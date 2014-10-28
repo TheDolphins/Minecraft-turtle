@@ -1,0 +1,3 @@
+turtle.select(3);
+local data=turtle.getItemDetail();
+print(data.name);

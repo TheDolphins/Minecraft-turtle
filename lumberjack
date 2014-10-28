@@ -1,0 +1,50 @@
+function isInFrontOf(name)
+  local success,data = turtle.inspect();
+  return success and data.name==name;  
+end
+
+function cutDownTree()
+  -- cut down the tree from bottom to up
+  while turtle.detect() or turtle.detectUp() do
+    turtle.dig();
+    if turtle.detectUp() then
+      turtle.digUp();
+    end
+    turtle.up();
+  end
+  -- if we are done, come all the way down to the ground
+  while not turtle.detectDown() do
+    turtle.down();
+  end
+  -- then plant a sapling
+  hold("minecraft:sapling");
+  turtle.place()
+end
+
+function hold(name)
+  for i=1,16 do
+    turtle.select(i)
+    if turtle.getItemDetail().name==name then
+      return
+    end
+  end
+  print("No more sapling!!");
+  die();
+end
+
+while true do
+  if isInFrontOf("minecraft:cobblestone") then
+    -- block is in front of us
+    turtle.turnLeft();
+    turtle.turnLeft();
+  else
+    -- is there a tree on left?
+    turtle.turnLeft();
+    if isInFrontOf("minecraft:log") then
+      cutDownTree();
+    end
+    turtle.turnRight();
+    turtle.forward();
+  end
+end
+
