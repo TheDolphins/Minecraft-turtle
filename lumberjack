@@ -37,6 +37,14 @@ function cutToRight()
   return i
 end
 
+-- refuel if there's coal in inventory
+-- (we don't want to use sapling as fuel)
+function refuel()
+  if select("minecraft:coal") then
+    turtle.refuel()
+  end
+end
+
 function cutDownTree()
   -- place the turtle under the tree
   turtle.dig();
@@ -79,39 +87,47 @@ function cutDownTree()
       turtle.back();
       
       -- then plant a sapling
-      hold("minecraft:sapling");
+      if not select("minecraft:sapling") then
+        die("No more sapling")
+      end
       turtle.place();
       
       return;
     end
   end
 end
-  
-function hold(name)
+
+function select(name)
   for i=1,16 do
     turtle.select(i)
     local detail = turtle.getItemDetail();
     if detail and detail.name==name then
-      return
+      return true
     end
   end
-  print("No more "+name);
-  die();
+  return false
 end
-
+  
+-- main loop
+local c=0
 while true do
   if isInFrontOf("minecraft:cobblestone") then
-    -- block is in front of us
+    -- block is in front of us. turn around
     turtle.turnLeft();
     turtle.turnLeft();
   else
-    -- is there a tree on left?
+    -- is there a tree on left? if so, cut that down
     turtle.turnLeft();
     if isInFrontOf("minecraft:log") then
       cutDownTree();
     end
     turtle.turnRight();
     turtle.forward();
+  end
+
+  c++
+  if (c%16)==0 then
+    refuel()
   end
 end
 
