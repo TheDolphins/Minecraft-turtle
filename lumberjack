@@ -103,7 +103,7 @@ end
 -- is it bright outside?
 function duringDayTime()
   local t = os.time()
-  return t>=8 and t<=18
+  return t>=6 and t<=18
 end
 
 -- main loop
