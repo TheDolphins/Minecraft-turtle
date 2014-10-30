@@ -1,0 +1,81 @@
+function main()
+  while true do
+    if weHaveStuffToSmelt() then
+      print("Smelting")
+      local count = putItIntoFurnace()
+      if putFuel(count)==0 then
+        print("Run out of fuel")
+        die()
+      end
+      sleep(10*count) -- wait for the smelting to complete
+      print("Batch done")
+    end
+    sleep(5)
+  end
+end
+
+-- select the slot that contains the item we want to smelt and return true,
+-- or return false
+function weHaveStuffToSmelt()
+  for i=1,16 do
+    local d = turtle.getItemDetail(i)
+    if isSmeltable(d.name) then
+      turtle.select(i)
+      return true
+    end
+  end
+  return false
+end
+
+-- is the given block name smeltable?
+function isSmeltable(name)
+  local blocks = { "minecraft:log", "minecraft:gold_ore", "minecraft:iron_ore", "minecraft:coal_ore", "minecraft:sand" }
+  for i=1,#blocks do
+    if blocks[i]==name then
+      return true
+    end
+  end
+  return false
+end
+
+-- put the selected slot into furnace and return how many we've put in there
+function putItIntoFurnace()
+  local count = turtle.getItemCount(turtle.getSelectedSlot())
+  if turtle.dropDown(count) then
+    return count
+  else
+    return 0
+  end
+end
+
+-- put in enough fuel to smelt the given number of materials
+function putFuel(count)
+  local needed = (count+7)/8
+  local fuel = 0
+  
+  while needed-fuel > 0 do
+    if not select("minecraft:coal") then
+      return fuel
+    end
+    
+    local available = math.min(needed,turtle.getItemCount())
+    turtle.drop(available)
+    fuel = fuel + available
+  end
+  return fuel
+end
+
+-- select the specified block (by block name) from the inventory
+-- return true if selected successfully
+function select(name)
+  for i=1,16 do
+    turtle.select(i)
+    local detail = turtle.getItemDetail();
+    if detail and detail.name==name then
+      return true
+    end
+  end
+  return false
+end
+
+main()
