@@ -1,0 +1,133 @@
+-- dig 3 block tall one block wide corridor
+function digForward(n)
+  for i=1,n do
+    local success,data=turtle.inspect()
+    if isSafeToDig(data) then
+      turtle.dig()
+    end
+
+    local success,data=turtle.inspectUp()
+    if isSafeToDig(data) then
+      turtle.digUp()
+    end
+    
+    local success,data=turtle.inspectDown()
+    if isSafeToDig(data) then
+      turtle.digDown()
+    end
+
+    turtle.forward()
+  end
+end
+
+function isSafeToDig(data)
+  if data and data.name=="ComputerCraft::CC-Turtle" then
+    return false
+  else
+    return true
+  end
+end
+
+-- make a roundtrip, making 3 block tall 2 block wide corridor
+-- when it's done, turtle faces the backward
+function roundtrip(n)
+  digForward(n)
+  turtle.turnLeft()
+  digForward(1)
+  turtle.turnLeft()
+  digForward(n)
+end
+
+function turnAround()
+  turtle.turnRight()
+  turtle.turnRight()
+end
+
+-- go forward until we find a chest, drop all the loots, then
+-- come back to where we started facing backward
+function chestRun()
+  -- create space for lanes
+  turtle.digUp()
+  turtle.digDown()
+
+  -- go the lower lane (and come back in the higher lane)
+  turtle.turnLeft()
+  turtle.down()
+
+  local dist = 0  -- count the distance we moved to be able to go back
+  while true do
+    local success, data = turtle.inspect()
+    if not success then
+      -- nothing in front of us
+      turtle.forward()
+      dist = dist +1
+      if dist > 100 then
+        die("Chest is too far")
+      end
+    else
+      -- something is in front of us
+      if data.name=="minecraft:chest" then
+        dropAllLoots()
+        -- go back where we came from, but in a different lane
+        turtle.up()
+        turtle.up()
+        turnAround()
+        for i=1,dist do
+          turtle.forward()
+        end
+        return
+      else
+        -- if we are stuck behind something, wait patiently
+        -- it's probably another turtle in lane
+        os.sleep(3)
+      end
+    end
+  end
+end
+
+-- drop everything into the chest in front of us, except coal, which we'll use to fuel
+function dropAllLoots()
+  for i=1,16 do
+    turtle.select(i)
+
+    data = turtle.getItemDetail(i)
+    if data then
+      if data.name=="minecraft:coal" then
+        -- TODO refuel
+        local gap = (turtle.getFuelLimit()-turtle.getFuelLevel())/80;
+        gap = math.min(gap,turtle.getItemCount(i))
+        turtle.refuel(gap)
+        turtle.drop() -- drop remaining coal
+      else
+        if not turtle.drop() then
+          die("chest full")
+        end
+      end
+    end
+  end
+end
+
+-- given the number of turtle 'army', do a mining run
+function main(army)
+  while true do
+    roundtrip(100)
+    
+    -- go back to the chest and drop the loot
+    chestRun()
+    -- when we are back we are still at the high lane
+    
+    if turtle.getFuelLevel()<400 then
+      -- if we are to die, don't block the mining lane
+      die("Fuel too low")
+    end
+
+    -- com back to the mining lane
+    turtle.down()
+
+    -- align to the the next row
+    digForward(army*2-1)
+    turtle.turnRight()
+  end
+end
+
+main(2)
