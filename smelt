@@ -19,7 +19,7 @@ end
 function weHaveStuffToSmelt()
   for i=1,16 do
     local d = turtle.getItemDetail(i)
-    if isSmeltable(d.name) then
+    if d and isSmeltable(d.name) then
       turtle.select(i)
       return true
     end
