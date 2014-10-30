@@ -99,25 +99,36 @@ function putAwayLogs()
     turtle.drop()
   end
 end
-  
+
+-- is it bright outside?
+function duringDayTime()
+  local t = os.time()
+  return t>=8 and t<=18
+end
+
 -- main loop
 local c=0
 while true do
-  if isInFrontOf("minecraft:cobblestone") then
-    -- block is in front of us. turn around
-    turtle.turnLeft();
-    turtle.turnLeft();
+  if duringDayTime() then
+    if isInFrontOf("minecraft:cobblestone") then
+      -- block is in front of us. turn around
+      turtle.turnLeft();
+      turtle.turnLeft();
+      print("fuel level: " .. turtle.getFuelLevel())
+    else
+      -- is there a tree on left? if so, cut that down
+      turtle.turnLeft();
+      if isInFrontOf("minecraft:log") then
+        cutDownTree();
+      end
+      if isInFrontOf("minecraft:chest") then
+        putAwayLogs()
+      end
+      turtle.turnRight();
+      turtle.forward();
+    end
   else
-    -- is there a tree on left? if so, cut that down
-    turtle.turnLeft();
-    if isInFrontOf("minecraft:log") then
-      cutDownTree();
-    end
-    if isInFrontOf("minecraft:chest") then
-      putAwayLogs()
-    end
-    turtle.turnRight();
-    turtle.forward();
+    os.sleep(10)
   end
 
   c=c+1
