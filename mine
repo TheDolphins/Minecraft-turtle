@@ -1,22 +1,29 @@
+FRONT = 0
+UP = 1
+DOWN = 2
+inspects = { turtle.inspect, turtle.inspectUp, turtle.inspectDown }
+digs     = { turtle.dig    , turtle.digUp,     turtle.digDown }
+
 -- dig 3 block tall one block wide corridor
 function digForward(n)
   for i=1,n do
-    while not turtle.forward() do
-      local success,data=turtle.inspect()
-      if isSafeToDig(data) then
-        turtle.dig()
-      end
+    safeDig(FRONT)
+    safeDig(UP)
+    safeDig(DOWN)
 
-      local success,data=turtle.inspectUp()
-      if isSafeToDig(data) then
-        turtle.digUp()
-      end
-      
-      local success,data=turtle.inspectDown()
-      if isSafeToDig(data) then
-        turtle.digDown()
-      end
+    -- really make sure we have moved forward, as gravel falling
+    -- down could prevent us from moving forward)
+    while not turtle.forward() do
+      safeDig(FRONT)
     end
+  end
+end
+
+--- dig() with defensive check into the given direction
+function safeDig(d)
+  local success,data=inspects(d)
+  if isSafeToDig(data) then
+    digs(d)
   end
 end
 
@@ -93,14 +100,15 @@ function dropAllLoots()
     data = turtle.getItemDetail(i)
     if data then
       if data.name=="minecraft:coal" then
-        -- TODO refuel
+        -- refuel
         local gap = (turtle.getFuelLimit()-turtle.getFuelLevel())/80;
         gap = math.min(gap,turtle.getItemCount(i))
         turtle.refuel(gap)
         turtle.drop() -- drop remaining coal
       else
-        if not turtle.drop() then
-          die("chest full")
+        while not turtle.drop() do
+          print("chest full")
+          os.sleep(10)
         end
       end
     end
@@ -130,4 +138,4 @@ function main(army)
   end
 end
 
-main(2)
+main(1)
