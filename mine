@@ -2,7 +2,21 @@ FRONT = 0
 UP = 1
 DOWN = 2
 inspects = { turtle.inspect, turtle.inspectUp, turtle.inspectDown }
-digs     = { turtle.dig    , turtle.digUp,     turtle.digDown }
+places   = { turtle.place,   turtle.placeUp,   turtle.placeDown }
+digs     = { turtle.dig,     turtle.digUp,     turtle.digDown }
+
+-- select the specified block (by block name) from the inventory
+-- return true if selected successfully
+function select(name)
+  for i=1,16 do
+    turtle.select(i)
+    local detail = turtle.getItemDetail();
+    if detail and detail.name==name then
+      return true
+    end
+  end
+  return false
+end
 
 -- dig 3 block tall one block wide corridor
 function digForward(n)
@@ -21,9 +35,23 @@ end
 
 --- dig() with defensive check into the given direction
 function safeDig(d)
-  local success,data=inspects(d)
-  if isSafeToDig(data) then
-    digs(d)
+  while true do
+    local success,data=inspects[d]()
+    if success then
+      if data.name == "ComputerCraft::CC-Turtle" then
+        -- pause in hope that the other turtle will move away
+        os.sleep(3)
+      elseif data.name=="minecraft:lava" or data.name=="minecraft:water" then
+        -- TODO: put a block to get rid of this source block
+        select("minecraft:cobblestone")
+        places[d]()
+      elseif
+        digs[d]()
+      end
+    else
+      -- nothing in this space, digging complete
+      return
+    end
   end
 end
 
