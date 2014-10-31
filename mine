@@ -1,22 +1,22 @@
 -- dig 3 block tall one block wide corridor
 function digForward(n)
   for i=1,n do
-    local success,data=turtle.inspect()
-    if isSafeToDig(data) then
-      turtle.dig()
-    end
+    while not turtle.forward() do
+      local success,data=turtle.inspect()
+      if isSafeToDig(data) then
+        turtle.dig()
+      end
 
-    local success,data=turtle.inspectUp()
-    if isSafeToDig(data) then
-      turtle.digUp()
+      local success,data=turtle.inspectUp()
+      if isSafeToDig(data) then
+        turtle.digUp()
+      end
+      
+      local success,data=turtle.inspectDown()
+      if isSafeToDig(data) then
+        turtle.digDown()
+      end
     end
-    
-    local success,data=turtle.inspectDown()
-    if isSafeToDig(data) then
-      turtle.digDown()
-    end
-
-    turtle.forward()
   end
 end
 
