@@ -43,6 +43,9 @@ function refuel()
   if select("minecraft:coal") then
     turtle.refuel()
   end
+  while turtle.getFuelLevel()<100 do
+    print("fuel too low")
+  end
 end
 
 function cutDownTree()
