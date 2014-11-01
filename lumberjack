@@ -40,11 +40,15 @@ end
 -- refuel if there's coal in inventory
 -- (we don't want to use sapling as fuel)
 function refuel()
-  if select("minecraft:coal") then
-    turtle.refuel()
-  end
-  while turtle.getFuelLevel()<100 do
+  while true do
+    if select("minecraft:coal") then
+      turtle.refuel()
+    end
+    if turtle.getFuelLevel()>100 then
+      return
+    end
     print("fuel too low")
+    os.sleep(5)
   end
 end
 
