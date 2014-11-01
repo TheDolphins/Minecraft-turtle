@@ -1,6 +1,6 @@
-FRONT = 0
-UP = 1
-DOWN = 2
+FRONT = 1
+UP = 2
+DOWN = 3
 inspects = { turtle.inspect, turtle.inspectUp, turtle.inspectDown }
 places   = { turtle.place,   turtle.placeUp,   turtle.placeDown }
 digs     = { turtle.dig,     turtle.digUp,     turtle.digDown }
@@ -42,10 +42,10 @@ function safeDig(d)
         -- pause in hope that the other turtle will move away
         os.sleep(3)
       elseif data.name=="minecraft:lava" or data.name=="minecraft:water" then
-        -- TODO: put a block to get rid of this source block
+        -- put a block to get rid of this source block
         select("minecraft:cobblestone")
         places[d]()
-      elseif
+      else
         digs[d]()
       end
     else
