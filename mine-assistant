@@ -1,0 +1,108 @@
+-- Assistant to the 'mine' program
+-- 
+-- shuttles blocks from source chests to the drop-off chest.
+--
+-- The turtle has to start above the drop-off chest facing toward
+-- the source chest. It'll move forward until it finds itself
+-- above a chest, then it sucks up every block in it. If necessary
+-- the turtle will wait until its inventory becomes full. The expectation
+-- here is that the 'mine' turtle will come back and drop off more blocks.
+--
+-- Once its inventory is full, the turtle will turn around and go back
+-- to the drop-off chest. It determines a drop-off chest by keeping moving
+-- forward until it gets obstracted by a block in front of it, and the
+-- chest must be right under it.
+--
+-- the turtle will repeat this forever, automatically refueling from coal
+-- in the loot as it finds them.
+function main()
+  while true do
+    while not isInventoryFull() do
+      -- proceed to the collection point
+      forwardToChest()
+      
+      -- suck up as much stuff as we can
+      if not turtle.suckDown() then
+        print("chest is empty. waiting for item")
+        os.sleep(5)
+      end
+    end
+    
+    -- at this point we have full inventory. go back to the drop-off point
+    turnAround()
+    forwardToDropOff()
+
+    refuelIfPossible()    
+    -- drop off
+    for i=1,16 do
+      turtle.select(i)
+      while turtle.getItemCount()>0 and not turtle.dropDown() do
+        print("chest is full. waiting")
+        os.sleep(5)
+      end
+    end
+
+    turnAround()
+    turtle.forward()
+  end
+end
+
+
+function turnAround()
+  turtle.turnRight()
+  turtle.turnRight()
+end
+
+function forwardToChest()
+  while not isOn("minecraft:chest") do
+    turtle.forward()
+  end
+end
+
+function forwardToDropOff()
+  while true do
+    local s,d = turtle.inspect()
+    if s then
+      return
+    end
+    turtle.forward()
+  end
+end
+
+function isInventoryFull()
+  for i=1,16 do
+    if not turtle.getItemDetail(i) then
+      return false  -- this slot is empty
+    end
+  end
+  return true
+end
+
+function isOn(name)
+  local s,d=turtle.inspectDown()
+  return s and d.name==name
+end
+
+-- select the specified block (by block name) from the inventory
+-- return true if selected successfully
+function select(name)
+  for i=1,16 do
+    turtle.select(i)
+    local detail = turtle.getItemDetail();
+    if detail and detail.name==name then
+      return true
+    end
+  end
+  return false
+end
+
+function refuelIfPossible()
+  if select("minecraft:coal") then
+    local gap = (turtle.getFuelLimit()-turtle.getFuelLevel())/80;
+    gap = math.min(gap,turtle.getItemCount())
+    turtle.refuel(gap)
+    print("refueled to " .. turtle.getFuelLevel())
+  end
+end
+
+main()
