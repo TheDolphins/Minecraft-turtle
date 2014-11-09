@@ -7,6 +7,8 @@
 -- the bounding wall.
 --
 -- large fuel consumption. and at least 'n' dirts are needed in slot 1.
+
+-- (C) Copyright Rosysk 2014
 local n = 48
 
 function forward()
