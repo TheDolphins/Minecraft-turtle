@@ -1,0 +1,16 @@
+-- A part of the Water Excavation Programs
+-- 
+-- build a piller that's 50 level tall
+-- used to anchor the four corners of the area.
+turtle.select(1)
+
+for j=1,50 do 
+  turtle.digDown()
+  turtle.down()
+end
+
+for s=1,50 do
+  turtle.up()
+  turtle.placeDown()
+end
+

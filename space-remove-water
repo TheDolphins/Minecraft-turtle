@@ -1,0 +1,39 @@
+-- A part of the Water Excavation Programs
+-- 
+-- after running 'space-down1', put a turtle at the north-east corner inside the wall,
+-- right above the sea level, facing west.
+--
+-- this program will remove water by one level to bring down the sea level inside
+-- the bounding wall.
+--
+-- large fuel consumption. and at least 'n' dirts are needed in slot 1.
+local n = 48
+
+function forward()
+  turtle.dig()
+  turtle.forward()
+end
+
+turtle.select(1)
+
+-- remove water by one level from 47x47 square space surrounded by a border
+for y=1,n-3 do
+
+  for x=1,n-3 do
+    turtle.placeDown()
+    forward()
+  end
+
+  turtle.turnLeft()
+  turtle.turnLeft()
+
+
+  for x=1,n-3 do
+    forward()
+    turtle.digDown()  
+  end  
+
+  turtle.turnRight()
+  forward()
+  turtle.turnRight()
+end

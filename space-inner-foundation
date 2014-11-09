@@ -1,0 +1,8 @@
+-- lay down the inner wall of dirt 2 blocks high
+for i=1,4 do
+  for j=1,46 do
+    turtle.placeDown()
+    turtle.forward()
+  end
+  turtle.turnLeft()
+end

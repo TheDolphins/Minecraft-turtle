@@ -1,0 +1,13 @@
+-- A part of the Water Excavation Programs
+-- 
+-- This is the first program to run to setup the bounding box at the sea level.
+-- After this, 'space-pillar' needs to be used at four corners to build solid pillars
+-- 
+local n = 48
+local t = turtle
+
+for i=1,n do
+  t.forward()
+  t.placeDown()
+end
+t.turnLeft()

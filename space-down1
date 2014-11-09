@@ -1,0 +1,104 @@
+-- A part of the Water Excavation Programs
+-- 
+-- place a turtle at the north-east corner of the square, facing north toward the wall,
+-- below the water level at the position '>' below ('*' are the dirt)
+-- 
+--         *
+--        >**
+-- 
+-- ... and run this program. turtle will lower the whole bounding box by one level
+--
+local n = 48
+
+local t = turtle
+
+function placeBack()
+    t.turnRight()
+    t.turnRight()
+    t.place()
+    t.turnLeft()
+    t.turnLeft()
+end
+
+function corner()
+    t.dig()
+    t.forward()
+    t.placeDown()
+
+    -- do the same with the next block
+    t.turnLeft()
+    t.dig()
+    t.forward()
+      -- pull down the edge
+      t.dig()
+      t.forward()
+      t.placeDown()
+      t.back()
+
+      t.turnRight()
+        -- pull down the other edge
+        t.dig()
+        t.forward()
+        t.placeDown()
+        t.back()
+      t.turnLeft()
+      
+    t.placeDown()
+    t.back()
+    t.turnRight()
+    
+    t.dig()
+    t.forward()
+    t.placeDown()
+    
+    t.back()
+      -- do the same with the next block
+      t.turnLeft()
+      t.place()
+      t.turnRight()
+    t.back()
+    t.place()
+    
+    t.up()
+    t.dig()
+      -- do the same with the next block
+      t.forward()
+      t.turnLeft()
+      t.dig()
+      t.turnRight()
+      t.back()
+   t.down()
+   
+   t.turnLeft() -- orient itself for the next row
+end
+
+function normal()
+    t.dig()
+    t.forward()
+    t.placeDown()
+
+    t.dig()
+    t.forward()
+    t.placeDown()
+
+    t.back()
+    t.back()
+    t.place()
+
+    t.digUp()
+    t.up()
+    t.dig()
+    t.down()
+
+    t.turnLeft()
+    t.dig()
+    t.forward()
+    t.turnRight()
+end
+
+for j=1,4 do
+  for i=1,n-4 do
+    normal()
+  end
+  corner()
+end
