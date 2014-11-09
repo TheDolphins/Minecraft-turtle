@@ -1,0 +1,6 @@
+-- a program to mine a cobbletsone farm
+while true do
+  turtle.dig()
+  os.sleep(2)
+  turtle.dropDown()
+end
