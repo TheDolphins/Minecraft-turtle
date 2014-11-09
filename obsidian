@@ -1,0 +1,49 @@
+-- a program used to mine obsidian plate that
+-- one tends to get when pouring a water over
+-- an underground lava lake.
+-- 
+-- place a turtle at the same level as obsidian plate,
+-- run this program, and a turtle will mine obsidian
+-- and move forward until it hits an obstacle.
+-- both sides of the turtle get mined if there's any
+-- obsidian there.
+
+function isInFrontOf(name)
+  local success,data = turtle.inspect();
+  return success and data.name==name;  
+end
+
+function isFrontEmpty()
+  local success,data = turtle.inspect();
+  return not success
+end
+
+
+function digObsidian()
+  if isInFrontOf("minecraft:obsidian") then
+    turtle.dig()
+  end
+end
+
+function main(args)
+  local n = 999
+  if #args == 1 then
+    n = tonumber(args[1])
+  end
+  for i=1,n do
+    digObsidian()
+    turtle.turnLeft()
+    digObsidian()
+    turtle.turnRight()
+    turtle.turnRight()
+    digObsidian()
+    turtle.turnLeft()
+    if not isFrontEmpty() then
+      print("cant move")
+      return
+    end
+    turtle.forward()
+  end
+end
+
+main({...})
