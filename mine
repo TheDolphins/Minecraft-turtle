@@ -1,3 +1,25 @@
+-- Industrial Scale Mining
+-- 
+-- Starting at a south-east corner, excavate a space 3 block high toward west that has a fixed north-south distance (D)
+-- 
+-- Initially, put a large chest facing a turtle, with a turtle next to it (but a level above.)
+-- The miner will go forward 'D' distance and come back the next lane, then drop off the loots into the chest,
+-- and repeat the run, gradually moving to west.
+--
+-- The turtle will automatically refuel itself from coals it finds.
+--
+-- initial layout from top:
+--
+--    C                 C:chest, ^:turtle facing north
+--   ^C
+--
+-- initial layout from rear:
+--
+--   T                  T:turtle's back, C:chest from side
+--    C
+--
+D = 100
+
 FRONT = 1
 UP = 2
 DOWN = 3
@@ -96,7 +118,7 @@ function chestRun()
       -- nothing in front of us
       turtle.forward()
       dist = dist +1
-      if dist > 100 then
+      if dist > D then
         die("Chest is too far")
       end
     else
@@ -146,7 +168,7 @@ end
 -- given the number of turtle 'army', do a mining run
 function main(army)
   while true do
-    roundtrip(100)
+    roundtrip(D)
     
     -- go back to the chest and drop the loot
     chestRun()
