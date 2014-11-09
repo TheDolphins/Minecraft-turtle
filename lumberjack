@@ -1,3 +1,20 @@
+-- lumberjack bot that works as a wood farm
+--
+-- Pick a straight flat line segment on the ground, and mark both ends with a cobblestone.
+-- plant tree on both sides of this line segment, as well as one chest.
+--
+-- Put a turtle on the ground, and run this program. The turtle will go back and forth
+-- this line segment, looking for a tree. If it finds a tree, it cuts the tree down, replants
+-- a sapling, and moves on.
+-- 
+-- The turtle will rest during nights as trees do not grow. Obtained logs get dropped to a
+-- chest everytime it goes by a chest. Put coal in its inventory and the turtle will periodically
+-- auto-refuel from it. The turtle must have sufficient saplings initially, although once it 
+-- gets going, it tends to accumulate enough saplings on its own from cut-down trees.
+--
+-- Licensed under MIT license
+-- (C) Copyright by Kohsuke Kawaguchi, 2014
+
 function isInFrontOf(name)
   local success,data = turtle.inspect();
   return success and data.name==name;  
