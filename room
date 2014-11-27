@@ -1,0 +1,106 @@
+-- Industrial Scale Mining
+-- 
+-- Starting at a south-east corner, excavate a space 3 block high toward west that has a fixed north-south distance (D)
+-- 
+-- Initially, put a large chest facing a turtle, with a turtle next to it (but a level above.)
+-- The miner will go forward 'D' distance and come back the next lane, then drop off the loots into the chest,
+-- and repeat the run, gradually moving to west.
+--
+-- The turtle will automatically refuel itself from coals it finds.
+--
+-- initial layout from top:
+--
+--    C                 C:chest, ^:turtle facing north
+--   ^C
+--
+-- initial layout from rear:
+--
+--   T                  T:turtle's back, C:chest from side
+--    C
+--
+D = 100
+
+FRONT = 1
+UP = 2
+DOWN = 3
+inspects = { turtle.inspect, turtle.inspectUp, turtle.inspectDown }
+places   = { turtle.place,   turtle.placeUp,   turtle.placeDown }
+digs     = { turtle.dig,     turtle.digUp,     turtle.digDown }
+
+os.loadAPI("common")
+
+-- dig 3 block tall one block wide corridor
+function digForward(n)
+  for i=1,n do
+    safeDig(FRONT)
+    safeDig(UP)
+    safeDig(DOWN)
+
+    -- really make sure we have moved forward, as gravel falling
+    -- down could prevent us from moving forward)
+    while not turtle.forward() do
+      safeDig(FRONT)
+    end
+  end
+end
+
+--- dig() with defensive check into the given direction
+function safeDig(d)
+  while true do
+    local success,data=inspects[d]()
+    if success then
+      if data.name == "ComputerCraft::CC-Turtle" then
+        -- pause in hope that the other turtle will move away
+        os.sleep(3)
+      elseif data.name=="minecraft:lava" or data.name=="minecraft:water" then
+        -- put a block to get rid of this source block
+        common.select("minecraft:cobblestone")
+        places[d]()
+      else
+        digs[d]()
+      end
+    else
+      -- nothing in this space, digging complete
+      return
+    end
+  end
+end
+
+function isSafeToDig(data)
+  if data and data.name=="ComputerCraft::CC-Turtle" then
+    return false
+  else
+    return true
+  end
+end
+
+-- make a roundtrip, making 3 block tall 2 block wide corridor
+-- when it's done, turtle faces the backward
+function roundtrip(n)
+  digForward(n)
+end
+
+-- start from south east corner (inclusive) facing north, make size D (in N/S direction) x W (in E/W direction) room
+function room(d,w)
+  for i=1,w do
+    local t 
+    if i%2==1 then
+      t = turtle.turnLeft
+    else
+      t = turtle.turnRight
+    end
+    
+    digForward(d-1)
+    if i==w then
+      return
+    end
+
+    t()
+  	 digForward(1)
+	   t()
+  end
+end
+
+-- room(17,33)
+args={...}
+room(tonumber(args[1]),tonumber(args[2]))
