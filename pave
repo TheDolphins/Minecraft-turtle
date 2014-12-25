@@ -1,0 +1,16 @@
+
+function canContinue()
+  local s,d = turtle.inspect()
+  d = turtle.getItemDetail()
+  return not s and d 
+end
+
+function main()
+  turtle.select(1)
+  while canContinue() do
+    turtle.placeDown()
+    turtle.forward()
+  end
+end
+
+main()
