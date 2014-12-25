@@ -1,0 +1,49 @@
+-- common library code
+-- use it like this:
+--      os.loadAPI("common")
+
+
+-- select the specified block (by block name) from the inventory
+-- return true if selected successfully
+function select(name)
+  local b = turtle.getSelectedSlot()-1
+  for i=0,15 do
+    turtle.select((i+b)%16+1)
+    local detail = turtle.getItemDetail();
+    if detail and detail.name==name then
+      return true
+    end
+  end
+  return false
+end
+
+function turnAround()
+  turtle.turnRight()
+  turtle.turnRight()
+end
+
+function die(msg)
+  print(msg)
+  os.exit(1)
+end
+
+function isInFrontOf(name)
+  local success,data = turtle.inspect();
+  return success and data.name==name;
+end
+
+-- refuel if there's coal in inventory
+-- (we don't want to use sapling as fuel)
+function refuel()
+  while true do
+    if select("minecraft:coal") then
+      turtle.refuel()
+    end
+    if turtle.getFuelLevel()>100 then
+      return
+    end
+    print("fuel too low")
+    os.sleep(5)
+  end
+end
+

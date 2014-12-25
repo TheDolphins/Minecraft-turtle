@@ -15,10 +15,7 @@
 -- Licensed under MIT license
 -- (C) Copyright by Kohsuke Kawaguchi, 2014
 
-function isInFrontOf(name)
-  local success,data = turtle.inspect();
-  return success and data.name==name;  
-end
+os.loadAPI("common")
 
 -- cut the tree above
 function cutUp()
@@ -31,7 +28,7 @@ end
 
 -- cut the tree in front
 function cut()
-  if isInFrontOf("minecraft:log") or isInFrontOf("minecraft:leaves") then
+  if common.isInFrontOf("minecraft:log") or common.isInFrontOf("minecraft:leaves") then
     turtle.dig();
     return 1
   else
@@ -58,7 +55,7 @@ end
 -- (we don't want to use sapling as fuel)
 function refuel()
   while true do
-    if select("minecraft:coal") then
+    if common.select("minecraft:coal") then
       turtle.refuel()
     end
     if turtle.getFuelLevel()>100 then
@@ -76,7 +73,7 @@ function cutDownTree()
   
   while true do
     for i=1,4 do
-      if isInFrontOf("minecraft:log") or isInFrontOf("minecraft:leaves") then
+      if common.isInFrontOf("minecraft:log") or common.isInFrontOf("minecraft:leaves") then
         turtle.dig();
       end
       turtle.turnLeft();
@@ -94,7 +91,7 @@ function cutDownTree()
       turtle.back();
       
       -- then plant a sapling
-      if not select("minecraft:sapling") then
+      if not common.select("minecraft:sapling") then
         die("No more sapling")
       end
       turtle.place();
@@ -104,22 +101,9 @@ function cutDownTree()
   end
 end
   
--- select the specified block (by block name) from the inventory
--- return true if selected successfully
-function select(name)
-  for i=1,16 do
-    turtle.select(i)
-    local detail = turtle.getItemDetail();
-    if detail and detail.name==name then
-      return true
-    end
-  end
-  return false
-end
-
 -- assuming we face a chest, put away all the logs
 function putAwayLogs()
-  while select("minecraft:log") do
+  while common.select("minecraft:log") do
     turtle.drop()
   end
 end
@@ -134,7 +118,7 @@ end
 local c=0
 while true do
   if duringDayTime() then
-    if isInFrontOf("minecraft:cobblestone") then
+    if common.isInFrontOf("minecraft:cobblestone") then
       -- block is in front of us. turn around
       turtle.turnLeft();
       turtle.turnLeft();
@@ -142,10 +126,10 @@ while true do
     else
       -- is there a tree on left? if so, cut that down
       turtle.turnLeft();
-      if isInFrontOf("minecraft:log") then
+      if common.isInFrontOf("minecraft:log") then
         cutDownTree();
       end
-      if isInFrontOf("minecraft:chest") then
+      if common.isInFrontOf("minecraft:chest") then
         putAwayLogs()
       end
       turtle.turnRight();

@@ -27,18 +27,7 @@ inspects = { turtle.inspect, turtle.inspectUp, turtle.inspectDown }
 places   = { turtle.place,   turtle.placeUp,   turtle.placeDown }
 digs     = { turtle.dig,     turtle.digUp,     turtle.digDown }
 
--- select the specified block (by block name) from the inventory
--- return true if selected successfully
-function select(name)
-  for i=1,16 do
-    turtle.select(i)
-    local detail = turtle.getItemDetail();
-    if detail and detail.name==name then
-      return true
-    end
-  end
-  return false
-end
+os.loadAPI("common")
 
 -- dig 3 block tall one block wide corridor
 function digForward(n)
@@ -65,7 +54,7 @@ function safeDig(d)
         os.sleep(3)
       elseif data.name=="minecraft:lava" or data.name=="minecraft:water" then
         -- put a block to get rid of this source block
-        select("minecraft:cobblestone")
+        common.select("minecraft:cobblestone")
         places[d]()
       else
         digs[d]()
@@ -93,11 +82,6 @@ function roundtrip(n)
   digForward(1)
   turtle.turnLeft()
   digForward(n)
-end
-
-function turnAround()
-  turtle.turnRight()
-  turtle.turnRight()
 end
 
 -- go forward until we find a chest, drop all the loots, then
@@ -128,7 +112,7 @@ function chestRun()
         -- go back where we came from, but in a different lane
         turtle.up()
         turtle.up()
-        turnAround()
+        common.turnAround()
         for i=1,dist do
           turtle.forward()
         end

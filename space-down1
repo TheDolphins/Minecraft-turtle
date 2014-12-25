@@ -96,9 +96,40 @@ function normal()
     t.turnRight()
 end
 
-for j=1,4 do
-  for i=1,n-4 do
-    normal()
-  end
-  corner()
+os.loadAPI("common")
+if not common.select("minecraft:cobblestone") then
+  common.die("I need some cobblestones!")
 end
+
+function main()
+  for j=1,4 do
+    for i=1,n-4 do
+      normal()
+    end
+    corner()
+  end
+  t.turnLeft();
+  sweep();
+  t.turnRight();
+end
+
+function sweep()
+  for j=1,n-3 do  -- temporarily set initial value to 2 from 1
+    for i=1,n-3 do
+        t.forward()
+    end
+
+    if (j%2==1) then
+      t.turnLeft()
+      t.forward()
+      t.turnLeft()
+    else
+      turtle.turnRight()
+      turtle.forward()
+      turtle.turnRight()
+    end
+  end
+end
+
+main()
+
