@@ -1,0 +1,50 @@
+for b = 1, 16 do
+  turtle.suck()
+end  
+
+turtle.turnRight()
+turtle.turnRight()
+
+for x = 1, 13 do 
+  turtle.forward()
+end
+
+turtle.turnLeft()
+
+for y = 1,5 do
+  turtle.forward()
+end
+
+for z = 1,3 do
+  turtle.up()
+end
+
+turtle.forward()
+turtle.forward()    
+for a = 1, 16 do
+  turtle.select(a)
+  turtle.dropDown()
+end  
+
+turtle.turnLeft()
+turtle.turnLeft()
+
+turtle.forward()
+turtle.forward()
+
+for c = 1, 3 do
+  turtle.down()
+end
+
+
+
+for e = 1, 5 do
+  turtle.forward()
+end
+
+turtle.turnRight()
+
+for  f = 1, 13 do
+  turtle.forward()
+end                              
+    
