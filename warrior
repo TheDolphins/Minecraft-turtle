@@ -1,0 +1,8 @@
+
+while true do
+  if turtle.attack() then
+    print ("Turtle attacked!")
+  else
+    -- os.sleep(1)
+  end
+end    
