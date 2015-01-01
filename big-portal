@@ -1,0 +1,41 @@
+os.loadAPI("common")
+
+function p(n)
+  common.select(n)
+  turtle.place()
+  -- turtle.dig()
+end
+
+function leftShift()
+  turtle.turnLeft()
+  turtle.forward()
+  turtle.turnRight()
+end
+
+function rightShift()
+  turtle.turnRight()
+  turtle.forward()
+  turtle.turnLeft()
+end
+
+function edge(move,n)
+
+  p("minecraft:cobblestone")
+  move()
+
+  for i=1,n do
+    p("minecraft:obsidian")
+    move()
+  end
+end
+
+-- n: give inner rect size (max 21)
+function square(n)
+  edge(turtle.up,n)
+  edge(leftShift,n)
+  edge(turtle.down,n)
+  edge(rightShift,n)
+end
+
+square(21)
+
